@@ -1,0 +1,54 @@
+/* Background styling */ 
+body { 
+    background-image:url("diagon_alley.jpg");          
+    background-size:cover; 
+    background-attachment:fixed; 
+    font-family:Arial,sans-serif; 
+    color:#fff; /* default text color */ 
+}  
+/* Container box */ 
+.form-container { 
+    width:400px; 
+    margin:80px auto; 
+    background:rgba(0, 0, 0, 0.6); /* semi-transparent background */ 
+    padding:20px;
+    border-radius:10px; 
+    box-shadow:0 0 15px #222; 
+}
+/* Heading style */ 
+h1 { 
+    text-align:center; 
+    color:#ffcc00; 
+    margin-bottom:20px; 
+}
+/* Input fields */ 
+input[type="text"], 
+input[type="number"], 
+input[type="email"], 
+select { 
+    width:95%; 
+    padding:10px; 
+    margin-top:5px; 
+    border:2px solid #ffcc00; 
+    border-radius:5px; 
+    background:#fff; 
+    color:#000; 
+}
+/* Radio buttons */ 
+input[type="radio"] { 
+    margin-left:10px; 
+}
+/* Submit button */ 
+button { 
+    width:100%; 
+    padding:10px; 
+    background:#ffcc00; 
+    color:#000; 
+    font-weight:bold; 
+    border:none; 
+    border-radius:5px; 
+    cursor:pointer; 
+}
+button:hover { 
+    background:#ffaa00; 
+}

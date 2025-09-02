@@ -1,0 +1,171 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Math Calculator</title> 
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"> 
+        <style> 
+            body { 
+                font-family:'Inter',sans-serif; 
+                background-color:#f3f4f6; 
+                display:flex; 
+                align-items:center; 
+                justify-content:center; 
+                min-height:100vh; 
+                padding:1rem; 
+            } 
+            .calculator-container { 
+                background-color:#ffffff; 
+                padding:2rem; 
+                border-radius:1rem; 
+                box-shadow:0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
+                width:100%; 
+                max-width:24rem; 
+                box-sizing:border-box; 
+            } 
+            .calculator-title { 
+                font-size:1.875rem; /* 3xl */ 
+                font-weight:600; /* font-bold */ 
+                text-align:center; 
+                color:#1f2937; /* gray-800 */ 
+                margin-bottom:1.5rem; /* mb-6 */ 
+            } 
+            .calculator-form { 
+                display:flex; 
+                flex-direction:column; 
+                align-items:center; 
+                gap:1rem; /* space-y-4 */ 
+            } 
+            .input-field { 
+                width:100%; 
+                padding:0.75rem 1rem; 
+                border-radius:0.5rem; 
+                border:2px solid #d1d5db; /* border-gray-300 */ 
+                transition-property:border-color; 
+                transition-duration:200ms; 
+                outline:none; 
+            } 
+            .input-field:focus { 
+                border-color:#3b82f6; /* focus:border-blue-500 */ 
+            } 
+            .operation-select { 
+                width:100%; 
+                padding:0.75rem 1rem; 
+                border-radius:0.5rem; 
+                border:2px solid #d1d5db; 
+                background-color:#ffffff; 
+                color:#4b5563; /* text-gray-700 */ 
+                transition-property:border-color; 
+                transition-duration:200ms; 
+                outline:none; 
+                cursor:pointer; 
+            } 
+            .operation-select:focus { 
+                border-color:#3b82f6; 
+            } 
+            .calculate-button { 
+                width:100%; 
+                background-color:#2563eb; /* bg-blue-600 */ 
+                color:#ffffff; 
+                font-weight:600; 
+                padding:0.75rem; 
+                border-radius:0.5rem; 
+                box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+                transition-property:background-color; 
+                transition-duration:200ms; 
+                outline:none; 
+            } 
+            .calculate-button:hover { 
+                background-color:#1d4ed8; /* hover:bg-blue-700 */ 
+            } 
+            .calculate-button:focus { 
+                box-shadow:0 0 0 2px rgba(59, 130, 246, 0.5); /* focus:ring-2 focus:ring-blue-500 */ 
+            } 
+            .result-display { 
+                margin-top:1.5rem; 
+                text-align:center; 
+                font-size:1.125rem; 
+                font-weight:600; 
+            } 
+            .text-green-600 { 
+                color:#16a34a; 
+            } 
+            .text-red-600 { 
+                color:#dc2626; 
+            } 
+        </style> 
+    </head> 
+    <body class="bg-gray-100 font-inter"> 
+        <div class="calculator-container"> 
+            <h2 class="calculator-title">Simple Calculator</h2>         
+            <form id="calculatorForm" class="calculator-form"> 
+                <!-- Input for the first number --> 
+                <input type="number" id="num1" placeholder="Enter first number" class="input-field" required> 
+                <!-- Dropdown for the operation --> 
+                <select id="operation" class="operation-select"> 
+                    <option value="add">Add (+)</option> 
+                    <option value="subtract">Subtract (-)</option> 
+                    <option value="multiply">Multiply (×)</option> 
+                    <option value="divide">Divide (÷)</option> 
+                </select>
+                <!-- Input for the second number --> 
+                <input type="number" id="num2" placeholder="Enter second number" class="input-field" required>             
+                <!-- Calculate button --> 
+                <button type="submit" class="calculate-button"> 
+                    Calculate 
+                </button> 
+            </form> 
+            <!-- Area to display result --> 
+            <div id="result" class="result-display"></div> 
+        </div> 
+        <script> 
+            const form=document.getElementById('calculatorForm'); 
+            const num1Input=document.getElementById('num1'); 
+            const num2Input=document.getElementById('num2'); 
+            const operationSelect=document.getElementById('operation'); 
+            const resultDiv=document.getElementById('result'); 
+            form.addEventListener('submit',function(event) { 
+                event.preventDefault(); // Prevent the form from submitting 
+                let num1=parseFloat(num1Input.value); 
+                let num2=parseFloat(num2Input.value); 
+                let operation=operationSelect.value; 
+                let result; 
+                if(isNaN(num1)||isNaN(num2)) { 
+                    resultDiv.textContent='❌ Please enter valid numbers!'; 
+                    resultDiv.classList.remove('text-green-600'); 
+                    resultDiv.classList.add('text-red-600'); 
+                    return; 
+                } 
+                switch(operation) { 
+                    case 'add': 
+                        result=num1+num2; 
+                        break; 
+                    case 'subtract': 
+                        result=num1-num2; 
+                        break; 
+                    case 'multiply': 
+                        result=num1*num2; 
+                        break; 
+                    case 'divide':
+                        if(num2===0) { 
+                            resultDiv.textContent='❌ Division by zero not allowed!'; 
+                            resultDiv.classList.remove('text-green-600'); 
+                            resultDiv.classList.add('text-red-600'); 
+                            return; 
+                        } 
+                        result=num1/num2; 
+                        break; 
+                    default: 
+                        resultDiv.textContent='Invalid operation selected.'; 
+                        resultDiv.classList.remove('text-green-600'); 
+                        resultDiv.classList.add('text-red-600'); 
+                        return; 
+                } 
+                resultDiv.textContent=`✅ Result: ${result}`; 
+                resultDiv.classList.remove('text-red-600'); 
+                resultDiv.classList.add('text-green-600'); 
+            }); 
+        </script> 
+    </body> 
+</html>
