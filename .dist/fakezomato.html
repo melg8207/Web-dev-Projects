@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+      <head>
+            <meta charset="UTF-8">
+            <title>Zomato Mimic</title>
+            <style>
+                  body {margin:0;font-family:Arial;background:#f8f8f8}
+                  .header {background:#e23744;color:#fff;padding:15px;font-size:22px;text-align:center;display:flex;justify-content:center;gap:30px}
+                  .header span {cursor:pointer}
+                  .search-box {padding:20px;text-align:center}
+                  .search-box input {width:60%;padding:10px;border:1px solid #ccc;border-radius:5px}
+                  .cards {display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;padding:20px}
+                  .card {background:#fff;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);padding:10px;transition:0.3s;cursor:pointer}
+                  .card:hover {transform:scale(1.03);box-shadow:0 4px 10px rgba(0,0,0,0.2)}
+                  .card img {width:100%;height:150px;object-fit:cover;border-radius:10px}
+                  .card-title {font-size:18px;margin-top:10px;font-weight:bold}
+                  .card-desc {font-size:14px;color:#666}
+                  .food-list {margin-top:10px}
+                  .food-item {margin:5px 0;padding:8px;background:#f2f2f2;border-radius:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:0.2s}
+                  .food-item:hover {background:#e6e6e6}
+                  .food-item img {width:50px;height:40px;border-radius:5px;object-fit:cover}
+                  .veg {width:12px;height:12px;background:#0f0;border:2px solid #060;border-radius:3px}
+                  .nonveg {width:12px;height:12px;background:#f00;border:2px solid #800;border-radius:3px}
+                  .button {margin-top:10px;padding:8px 12px;background:#e23744;color:#fff;border:none;border-radius:5px;cursor:pointer}
+                  #restPage, #cartPage {display:none;padding:20px}
+                  .cart-item {background:#fff;padding:10px;border-radius:8px;margin:10px 0;display:flex;align-items:center;gap:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+                  .cart-item img {width:60px;height:50px;object-fit:cover;border-radius:5px}
+            </style>
+      </head>
+      <body>
+            <div class="header" style="flex-direction:column">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Zomato_logo.png" style="width:150px;margin-bottom:10px">
+                  <div style="display:flex;gap:30px;font-size:20px">
+                        <span onclick="home()">Home</span>
+                        <span onclick="showCart()">Cart (<span id='cartCount'>0</span>)</span>
+                  </div>
+            </div>
+            <div id="homePage">
+                  <div class="search-box">
+                        <input type="text" id="srch" placeholder="Search for restaurants..." onkeyup="find()">
+                  </div>
+                  <div class="cards" id="list"></div>
+            </div>
+            <div id="restPage"></div>
+            <div id="cartPage"></div>
+            <script>
+                  let cart=[];
+                  let cur=null;
+                  let data=[{ 
+                        name:"Pizza Palace",desc:"Best cheesy pizzas",img:"https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg",foods:[{
+                              name:"Margherita",veg:true,img:"https://images.pexels.com/photos/4109084/pexels-photo-4109084.jpeg"},{
+                              name:"Pepperoni",veg:false,img:"https://images.pexels.com/photos/1405964/pexels-photo-1405964.jpeg"}
+                  ]},{
+                        name:"Burger Hub",desc:"Juicy burgers served hot",img:"https://images.pexels.com/photos/1639563/pexels-photo-1639563.jpeg",foods:[{
+                              name:"Veg Burger",veg:true,img:"https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg"},{
+                              name:"Chicken Burger",veg:false,img:"https://images.pexels.com/photos/1615197/pexels-photo-1615197.jpeg"}
+                  ]},{
+                        name:"Ice Cream Bay",desc:"Cool desserts",img:"https://images.pexels.com/photos/1352296/pexels-photo-1352296.jpeg",foods:[{
+                              name:"Vanilla Cup",veg:true,img:"https://images.pexels.com/photos/461430/pexels-photo-461430.jpeg"},{
+                              name:"Choco Blast",veg:true,img:"https://images.pexels.com/photos/461303/pexels-photo-461303.jpeg"}
+                  ]},{
+                        name:"Spicy Tandoor",desc:"Authentic Indian cuisine",img:"https://images.pexels.com/photos/11170284/pexels-photo-11170284.jpeg",foods:[{
+                              name:"Paneer Tikka",veg:true,img:"https://images.pexels.com/photos/9609841/pexels-photo-9609841.jpeg"},{
+                              name:"Chicken Tikka",veg:false,img:"https://images.pexels.com/photos/5409029/pexels-photo-5409029.jpeg"}
+                  ]}
+                  ];
+                  function show(d) {
+                        let out="";
+                              d.forEach((r,i)=>{
+                              out+=`<div class='card' onclick='openRest(${i})'>
+                                    <img src='${r.img}'>
+                                    <div class='card-title'>${r.name}</div>
+                                    <div class='card-desc'>${r.desc}</div>
+                              </div>`;
+                        });
+                        document.getElementById("list").innerHTML=out;
+                  }
+                  function openRest(i) {
+                        cur=data[i];
+                        document.getElementById("homePage").style.display="none";
+                        let foods="";
+                        cur.foods.forEach((f,x)=>{
+                              foods+=`<div class='food-item'>
+                                    <div class='${f.veg?"veg":"nonveg"}'></div>
+                                    <img src='${f.img}'>
+                                    <div>${f.name}</div>
+                                    <button class='button' style='margin-left:auto' onclick='event.stopPropagation();addToCart(${i},${x})'>Add to Cart</button>
+                              </div>`;
+                        });
+                        document.getElementById("restPage").innerHTML=`
+                        <h2>${cur.name}</h2>
+                        <img src='${cur.img}' style='width:100%;max-width:500px;border-radius:10px'>
+                        <p>${cur.desc}</p>
+                        <h3>Menu</h3>
+                        <div>${foods}</div>`;
+                        document.getElementById("restPage").style.display="block";
+                  }
+                  function addToCart(r,f) {
+                        let item={rest:data[r].name,food:data[r].foods[f].name,img:data[r].foods[f].img};
+                        cart.push(item);
+                        document.getElementById("cartCount").innerText=cart.length;
+                        alert("Added to cart!");
+                  }
+                  function showCart(){
+                        document.getElementById("homePage").style.display="none";
+                        document.getElementById("restPage").style.display="none";
+                        let out="<h2>Your Cart</h2>";
+                        if(cart.length==0){out+="<p>No items added</p>"}
+                        cart.forEach(c=>{
+                              out+=`<div class='cart-item'>
+                                    <img src='${c.img}'>
+                                    <div><b>${c.food}</b><br><small>${c.rest}</small></div>
+                              </div>`;
+                        });
+                        document.getElementById("cartPage").innerHTML=out;
+                        document.getElementById("cartPage").style.display="block";
+                  }
+                  function home() {
+                        document.getElementById("restPage").style.display="none";
+                        document.getElementById("cartPage").style.display="none";
+                        document.getElementById("homePage").style.display="block";
+                  }
+                  function find() {
+                        let k=document.getElementById("srch").value.toLowerCase();
+                        let f=data.filter(r=>r.name.toLowerCase().includes(k));
+                        show(f);
+                  }
+                  show(data);
+            </script>
+      </body>
+</html>
